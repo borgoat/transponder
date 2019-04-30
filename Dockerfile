@@ -10,4 +10,4 @@ FROM scratch
 
 COPY --from=builder /opt/transponder/transponder /usr/local/bin/transponder
 
-ENTRYPOINT [ "/usr/local/bin/transponder" ]
+CMD [ "/usr/local/bin/transponder" ]
