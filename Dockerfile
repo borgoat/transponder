@@ -21,6 +21,7 @@ COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certifi
 # Here is our binary
 COPY --from=builder /opt/transponder/transponder /usr/local/bin/transponder
 
+USER transponder
 EXPOSE 1492
 
 CMD [ "/usr/local/bin/transponder" ]
