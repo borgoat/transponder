@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -37,7 +38,9 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	mgrmap := statemgrmap.NewFilesystemMapWithPrefix("./.state")
+	statePath := path.Join(flagData, ".state")
+	mgrmap := statemgrmap.NewFilesystemMapWithPrefix(statePath)
+	log.Printf("State stored in %s", statePath)
 
 	bs := server.NewHttpBackendServer(mgrmap)
 
