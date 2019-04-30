@@ -12,6 +12,7 @@ RUN CGO_ENABLED=0   \
     GOOS=linux      \
     go build -o transponder
 
+# ---
 # Now the second lightweigth stage
 FROM scratch
 
@@ -24,4 +25,6 @@ COPY --from=builder /opt/transponder/transponder /usr/local/bin/transponder
 USER transponder
 EXPOSE 1492
 
-CMD [ "/usr/local/bin/transponder" ]
+VOLUME /var/local/tfstate
+
+CMD [ "/usr/local/bin/transponder", "-data", "/var/local/tfstate" ]
