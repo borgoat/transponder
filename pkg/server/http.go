@@ -14,20 +14,22 @@ import (
 	"github.com/transponder-tf/transponder/pkg/statemgrmap"
 )
 
-// HttpBackendServer is an implementation compatible with
+// HTTPBackendServer is an implementation compatible with
 // https://www.terraform.io/docs/backends/types/http.html
-type HttpBackendServer struct {
+type HTTPBackendServer struct {
 	mgrmap *statemgrmap.StateMgrMap
 }
 
-func NewHttpBackendServer(stateMgrMap *statemgrmap.StateMgrMap) *HttpBackendServer {
+// Create an HTTPBackendServer give a state manager map
+func NewHTTPBackendServer(stateMgrMap *statemgrmap.StateMgrMap) *HTTPBackendServer {
 
-	return &HttpBackendServer{
+	return &HTTPBackendServer{
 		mgrmap: stateMgrMap,
 	}
 }
 
-func (bs *HttpBackendServer) GetHandler() http.Handler {
+// Get the Handler which will respond to Terraform HTTP queries
+func (bs *HTTPBackendServer) GetHandler() http.Handler {
 	s := mux.NewRouter().Path("/{namespace}").Subrouter()
 
 	s.Methods("GET").HandlerFunc(bs.getHandler)
@@ -40,7 +42,8 @@ func (bs *HttpBackendServer) GetHandler() http.Handler {
 	return s
 }
 
-func (bs *HttpBackendServer) HandleWithRouter(r *mux.Router) {
+// Attach our handler to the given Router
+func (bs *HTTPBackendServer) HandleWithRouter(r *mux.Router) {
 	s := r.Path("/{namespace}").Subrouter()
 
 	s.Methods("GET").HandlerFunc(bs.getHandler)
@@ -51,7 +54,7 @@ func (bs *HttpBackendServer) HandleWithRouter(r *mux.Router) {
 	s.Methods("UNLOCK").HandlerFunc(bs.unlockHandler)
 }
 
-func (bs *HttpBackendServer) stateMgrFromRequest(req *http.Request) statemgr.Full {
+func (bs *HTTPBackendServer) stateMgrFromRequest(req *http.Request) statemgr.Full {
 	vars := mux.Vars(req)
 
 	mgr, err := bs.mgrmap.Get(vars["namespace"])
@@ -62,7 +65,7 @@ func (bs *HttpBackendServer) stateMgrFromRequest(req *http.Request) statemgr.Ful
 	return mgr
 }
 
-func (bs *HttpBackendServer) getHandler(res http.ResponseWriter, req *http.Request) {
+func (bs *HTTPBackendServer) getHandler(res http.ResponseWriter, req *http.Request) {
 	mgr := bs.stateMgrFromRequest(req)
 
 	// We ensure our state manager has the latest version
@@ -82,7 +85,7 @@ func (bs *HttpBackendServer) getHandler(res http.ResponseWriter, req *http.Reque
 	io.Copy(res, &buf)
 }
 
-func (bs *HttpBackendServer) postHandler(res http.ResponseWriter, req *http.Request) {
+func (bs *HTTPBackendServer) postHandler(res http.ResponseWriter, req *http.Request) {
 	mgr := bs.stateMgrFromRequest(req)
 
 	// We read the statefile as it comes in the request body
@@ -98,14 +101,14 @@ func (bs *HttpBackendServer) postHandler(res http.ResponseWriter, req *http.Requ
 	mgr.PersistState()
 }
 
-func (bs *HttpBackendServer) deleteHandler(res http.ResponseWriter, req *http.Request) {
+func (bs *HTTPBackendServer) deleteHandler(res http.ResponseWriter, req *http.Request) {
 	mgr := bs.stateMgrFromRequest(req)
 
 	statemgr.Import(statemgr.NewStateFile(), mgr, true)
 	mgr.PersistState()
 }
 
-func (bs *HttpBackendServer) lockHandler(res http.ResponseWriter, req *http.Request) {
+func (bs *HTTPBackendServer) lockHandler(res http.ResponseWriter, req *http.Request) {
 	mgr := bs.stateMgrFromRequest(req)
 
 	info, err := lockInfoFromRequest(req)
@@ -122,7 +125,7 @@ func (bs *HttpBackendServer) lockHandler(res http.ResponseWriter, req *http.Requ
 	log.Printf("LockID: %s", lockID)
 }
 
-func (bs *HttpBackendServer) unlockHandler(res http.ResponseWriter, req *http.Request) {
+func (bs *HTTPBackendServer) unlockHandler(res http.ResponseWriter, req *http.Request) {
 	mgr := bs.stateMgrFromRequest(req)
 
 	info, err := lockInfoFromRequest(req)

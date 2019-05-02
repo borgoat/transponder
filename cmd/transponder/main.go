@@ -42,7 +42,7 @@ func main() {
 	mgrmap := statemgrmap.NewFilesystemMapWithPrefix(statePath)
 	log.Printf("State stored in %s", statePath)
 
-	bs := server.NewHttpBackendServer(mgrmap)
+	bs := server.NewHTTPBackendServer(mgrmap)
 
 	r := mux.NewRouter()
 	srv.Handler = r
