@@ -8,9 +8,10 @@ RUN go mod download
 
 # Now build the source statically
 ADD . /opt/transponder/
-RUN CGO_ENABLED=0   \
-    GOOS=linux      \
-    go build -o transponder
+RUN CGO_ENABLED=0                                                       \
+    GOOS=linux                                                          \
+    go build -o _output/transponder                                     \
+                github.com/transponder-tf/transponder/cmd/transponder
 
 # ---
 # Now the second lightweigth stage
@@ -20,7 +21,7 @@ FROM scratch
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
 
 # Here is our binary
-COPY --from=builder /opt/transponder/transponder /usr/local/bin/transponder
+COPY --from=builder /opt/transponder/_output/transponder /usr/local/bin/transponder
 
 USER transponder
 EXPOSE 1492
