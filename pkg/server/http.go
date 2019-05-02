@@ -20,7 +20,7 @@ type HTTPBackendServer struct {
 	mgrmap *statemgrmap.StateMgrMap
 }
 
-// Create an HTTPBackendServer give a state manager map
+// NewHTTPBackendServer creates an HTTPBackendServer give a state manager map
 func NewHTTPBackendServer(stateMgrMap *statemgrmap.StateMgrMap) *HTTPBackendServer {
 
 	return &HTTPBackendServer{
@@ -28,7 +28,7 @@ func NewHTTPBackendServer(stateMgrMap *statemgrmap.StateMgrMap) *HTTPBackendServ
 	}
 }
 
-// Get the Handler which will respond to Terraform HTTP queries
+// GetHandler returns the Handler which will respond to Terraform HTTP queries
 func (bs *HTTPBackendServer) GetHandler() http.Handler {
 	s := mux.NewRouter().Path("/{namespace}").Subrouter()
 
@@ -42,7 +42,7 @@ func (bs *HTTPBackendServer) GetHandler() http.Handler {
 	return s
 }
 
-// Attach our handler to the given Router
+// HandleWithRouter attaches our handler to the given Router
 func (bs *HTTPBackendServer) HandleWithRouter(r *mux.Router) {
 	s := r.Path("/{namespace}").Subrouter()
 
