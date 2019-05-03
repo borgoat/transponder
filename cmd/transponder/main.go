@@ -39,7 +39,7 @@ func main() {
 	}
 
 	statePath := path.Join(flagData, ".state")
-	mgrmap := statemgrmap.NewFilesystemMapWithPrefix(statePath)
+	mgrmap := statemgrmap.NewFilesystemMap(statePath)
 	log.Printf("State stored in %s", statePath)
 
 	bs := server.NewHTTPBackendServer(mgrmap)

@@ -8,17 +8,18 @@ type filesystemStateLoader struct {
 	Prefix string
 }
 
-func (fsl filesystemStateLoader) NewFilesystemWithNamespace(namespace string) statemgr.Full {
+func (fsl filesystemStateLoader) newFilesystemStateMgr(namespace string) statemgr.Full {
 	return statemgr.NewFilesystem(fsl.Prefix + "/" + namespace + ".tfstate")
 }
 
-func NewFilesystemMapWithPrefix(prefix string) *StateMgrMap {
+// NewFilesystemMap creates a StateMgrMap using statemgr.Filesystem as a state manager
+func NewFilesystemMap(prefix string) *StateMgrMap {
 	sl := &filesystemStateLoader{
 		Prefix: prefix,
 	}
 
 	mgrmap := &StateMgrMap{
-		newWithNamespace: sl.NewFilesystemWithNamespace,
+		newWithNamespace: sl.newFilesystemStateMgr,
 	}
 
 	return mgrmap
