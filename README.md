@@ -1,5 +1,7 @@
 # Terraform Transponder
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/transponder-tf/transponder)](https://goreportcard.com/report/github.com/transponder-tf/transponder)
+
 ###### IMPORTANT
 *Transponder* is compatible with __Terraform 0.12__
 (currently in beta).
