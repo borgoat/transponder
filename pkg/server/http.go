@@ -11,7 +11,7 @@ import (
 	"github.com/hashicorp/terraform/states/statefile"
 	"github.com/hashicorp/terraform/states/statemgr"
 
-	"github.com/transponder-tf/transponder/pkg/statemgrmap"
+	"github.com/transponder-tf/transponder/pkg/states/statemgrmap"
 )
 
 // HTTPBackendServer is an implementation compatible with

@@ -11,7 +11,9 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/transponder-tf/transponder/pkg/server"
-	"github.com/transponder-tf/transponder/pkg/statemgrmap"
+	"github.com/transponder-tf/transponder/pkg/states/statemgrmap"
+
+	"github.com/philippgille/gokv/file"
 )
 
 var (
@@ -38,9 +40,11 @@ func main() {
 		ReadTimeout:  15 * time.Second,
 	}
 
-	statePath := path.Join(flagData, ".state")
-	mgrmap := statemgrmap.NewFilesystemMap(statePath)
-	log.Printf("State stored in %s", statePath)
+	options := file.DefaultOptions
+	options.Directory = path.Join(flagData, "transponder")
+	store, _ := file.NewStore(options)
+
+	mgrmap := statemgrmap.NewGoKVMap(store)
 
 	bs := server.NewHTTPBackendServer(mgrmap)
 
