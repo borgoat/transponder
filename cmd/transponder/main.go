@@ -10,7 +10,6 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/transponder-tf/transponder/pkg/server"
 	"github.com/transponder-tf/transponder/pkg/states/statemgrmap"
 
 	"github.com/philippgille/gokv/file"
@@ -52,11 +51,11 @@ func main() {
 		log.Fatalf("[ERROR] Could not create gokv.Store: %v", err)
 	}
 
-	log.Printf("[DEBUG] Create gokv.Store with type %T", store)
+	log.Printf("[DEBUG] Created gokv.Store with type %T", store)
 
 	mgrmap := statemgrmap.NewGoKVMap(store)
 
-	bs := server.NewHTTPBackendServer(mgrmap)
+	bs := newHTTPBackendServer(mgrmap)
 
 	
 	srv := &http.Server{
@@ -67,9 +66,9 @@ func main() {
 
 	r := mux.NewRouter()
 	srv.Handler = r
-	log.Printf("[DEBUG] Creating http.Server with options %+v", srv)
+	log.Printf("[DEBUG] Created http.Server with options %+v", srv)
 
-	log.Printf("[DEBUG] Handle /terraform with %T", bs)
+	log.Printf("[DEBUG] Handling /terraform with %T", bs)
 	bs.HandleWithRouter(r.PathPrefix("/terraform").Subrouter())
 
 	log.Printf("[INFO] Starting server on %s", srv.Addr)

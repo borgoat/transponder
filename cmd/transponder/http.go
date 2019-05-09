@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"bytes"
@@ -21,7 +21,7 @@ type HTTPBackendServer struct {
 }
 
 // NewHTTPBackendServer creates an HTTPBackendServer give a state manager map
-func NewHTTPBackendServer(stateMgrMap *statemgrmap.StateMgrMap) *HTTPBackendServer {
+func newHTTPBackendServer(stateMgrMap *statemgrmap.StateMgrMap) *HTTPBackendServer {
 
 	return &HTTPBackendServer{
 		mgrmap: stateMgrMap,
